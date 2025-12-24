@@ -1,13 +1,21 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { RadioPlayer } from "@/components/RadioPlayer";
+import { Helmet } from "react-helmet-async";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <>
+      <Helmet>
+        <title>안녕 교통정보 - 실시간 교통정보</title>
+        <meta name="description" content="안녕 교통정보에서 실시간 교통정보와 청취자 사연을 들어보세요. 80년대 감성의 라디오 방송 경험을 제공합니다." />
+      </Helmet>
+      
+      <div className="min-h-screen bg-background flex items-center justify-center p-4 safe-area-inset">
+        {/* Mobile device frame wrapper */}
+        <div className="w-full max-w-[400px] h-[calc(100vh-2rem)] max-h-[800px] bg-card rounded-3xl shadow-mobile overflow-hidden">
+          <RadioPlayer />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
