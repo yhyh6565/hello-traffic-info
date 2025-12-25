@@ -4,7 +4,11 @@ import { TrackInfo } from "./TrackInfo";
 import { ProgressBar } from "./ProgressBar";
 import { PlayerControls } from "./PlayerControls";
 import { ScriptText } from "./ScriptText";
+import { VolumeControl } from "./VolumeControl";
+import { SpectrumAnalyzer } from "./SpectrumAnalyzer";
+import { PlaylistSheet } from "./PlaylistSheet";
 import { useRadioPlayer } from "@/hooks/useRadioPlayer";
+import { useAutoTheme } from "@/hooks/useAutoTheme";
 
 export function RadioPlayer() {
   const {
@@ -13,21 +17,40 @@ export function RadioPlayer() {
     progress,
     displayTitle,
     isGlitching,
+    volume,
     togglePlay,
     next,
+    setVolume,
+    playScript,
   } = useRadioPlayer();
+
+  // Auto theme based on time of day
+  useAutoTheme();
 
   return (
     <div className="h-full flex flex-col bg-card">
-      <Header />
+      <Header
+        isPlaying={isPlaying}
+        playlistButton={
+          <PlaylistSheet
+            currentScript={currentScript}
+            onSelectScript={playScript}
+          />
+        }
+      />
       
       <main className="flex-1 flex flex-col px-6 py-8 overflow-hidden">
         {/* Album Art with LP animation */}
         <AlbumArt isPlaying={isPlaying} />
-        
+
+        {/* Spectrum Analyzer */}
+        <div className="mt-6">
+          <SpectrumAnalyzer isPlaying={isPlaying} />
+        </div>
+
         {/* Track Info with glitch effect */}
-        <TrackInfo 
-          displayTitle={displayTitle} 
+        <TrackInfo
+          displayTitle={displayTitle}
           isGlitching={isGlitching}
           type={currentScript?.type}
         />
@@ -39,13 +62,18 @@ export function RadioPlayer() {
         
         {/* Player Controls */}
         <div className="mt-6">
-          <PlayerControls 
-            isPlaying={isPlaying} 
+          <PlayerControls
+            isPlaying={isPlaying}
             onTogglePlay={togglePlay}
             onNext={next}
           />
         </div>
-        
+
+        {/* Volume Control */}
+        <div className="mt-4">
+          <VolumeControl volume={volume} onVolumeChange={setVolume} />
+        </div>
+
         {/* Script Text Display */}
         <div className="mt-8 flex-1 bg-secondary/50 rounded-2xl p-4 overflow-hidden">
           <ScriptText script={currentScript} isPlaying={isPlaying} />

@@ -1,8 +1,17 @@
-import { ChevronLeft, Share2 } from "lucide-react";
+import { Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Clock } from "./header/Clock";
+import { OnAirIndicator } from "./header/OnAirIndicator";
+import { ThemeToggle } from "./header/ThemeToggle";
+import { RADIO_CONSTANTS } from "@/constants/radio";
 
-export function Header() {
+interface HeaderProps {
+  isPlaying?: boolean;
+  playlistButton?: React.ReactNode;
+}
+
+export function Header({ isPlaying = false, playlistButton }: HeaderProps) {
   const handleShare = async () => {
     try {
       if (navigator.share) {
@@ -21,23 +30,37 @@ export function Header() {
   };
 
   return (
-    <header className="flex items-center justify-between px-4 py-3 border-b border-border bg-card">
-      <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
-        <ChevronLeft className="h-5 w-5" />
-      </Button>
-      
-      <h1 className="text-base font-bold text-foreground">
-        실시간 교통정보
-      </h1>
-      
-      <Button 
-        variant="ghost" 
-        size="icon" 
-        className="text-muted-foreground hover:text-foreground"
-        onClick={handleShare}
-      >
-        <Share2 className="h-5 w-5" />
-      </Button>
+    <header className="border-b border-border bg-card">
+      {/* Top bar with time and frequency */}
+      <div className="flex items-center justify-between px-4 py-2 bg-primary/5">
+        <OnAirIndicator isPlaying={isPlaying} />
+
+        <div className="text-xs font-mono font-bold text-primary">
+          {RADIO_CONSTANTS.FREQUENCY}
+        </div>
+
+        <Clock />
+      </div>
+
+      {/* Main header */}
+      <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex-1">{playlistButton}</div>
+
+        <h1 className="text-base font-bold text-foreground">안녕 교통정보</h1>
+
+        <div className="flex-1 flex justify-end gap-1">
+          <ThemeToggle />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-muted-foreground hover:text-foreground"
+            onClick={handleShare}
+            title="공유하기"
+          >
+            <Share2 className="h-5 w-5" />
+          </Button>
+        </div>
+      </div>
     </header>
   );
 }
