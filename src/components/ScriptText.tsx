@@ -1,9 +1,7 @@
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Radio, AlertTriangle } from "lucide-react";
+import { Radio, AlertTriangle, Music2 } from "lucide-react";
 import type { Script } from "@/types/script";
-import { useState, useEffect } from "react";
-import { RADIO_CONSTANTS } from "@/constants/radio";
 
 interface ScriptTextProps {
   script: Script | null;
@@ -11,78 +9,56 @@ interface ScriptTextProps {
 }
 
 export function ScriptText({ script, isPlaying }: ScriptTextProps) {
-  const [displayedText, setDisplayedText] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-
-  useEffect(() => {
-    if (!script || !isPlaying) {
-      setDisplayedText(script?.text || "");
-      setIsTyping(false);
-      return;
-    }
-
-    // Reset and start typing animation
-    setDisplayedText("");
-    setIsTyping(true);
-    let currentIndex = 0;
-    const text = script.text;
-
-    const typingInterval = setInterval(() => {
-      if (currentIndex < text.length) {
-        setDisplayedText(text.slice(0, currentIndex + 1));
-        currentIndex++;
-      } else {
-        setIsTyping(false);
-        clearInterval(typingInterval);
-      }
-    }, RADIO_CONSTANTS.TYPING_SPEED);
-
-    return () => {
-      clearInterval(typingInterval);
-      setIsTyping(false);
-    };
-  }, [script, isPlaying]);
-
   if (!script) {
     return (
-      <div className="flex flex-col items-center justify-center h-40 text-muted-foreground">
-        <Radio className="h-8 w-8 mb-2 opacity-50" />
-        <p className="text-sm">재생 버튼을 눌러 라디오를 시작하세요</p>
+      <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-8 text-center bg-card/50 backdrop-blur-sm rounded-none">
+        <Radio className="h-12 w-12 mb-4 opacity-30" />
+        <p className="text-lg font-medium opacity-70">재생 버튼을 눌러<br />라디오를 시작하세요</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center gap-2">
+    <div className="h-full flex flex-col">
+      {/* Meta Info Header */}
+      <div className="flex items-center gap-2 mb-4 shrink-0 px-1">
         {script.isCreepy ? (
-          <AlertTriangle className="h-4 w-4 text-destructive" />
+          <AlertTriangle className="h-4 w-4 text-destructive animate-pulse" />
         ) : (
           <Radio className="h-4 w-4 text-primary" />
         )}
         <span className={cn(
-          "text-xs font-medium px-2 py-0.5 rounded-full",
+          "text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wider",
           script.type === "story"
-            ? "bg-primary/10 text-primary"
-            : "bg-secondary text-secondary-foreground"
+            ? "bg-primary/20 text-primary border border-primary/20"
+            : "bg-secondary text-secondary-foreground border border-secondary"
         )}>
-          {script.type === "story" ? "청취자 사연" : "교통 정보"}
-        </span>
-        <span className="text-sm font-medium text-foreground">
-          {script.title}
+          {script.type === "story" ? "ON AIR • 사연" : "ON AIR • 교통정보"}
         </span>
       </div>
 
-      <ScrollArea className="h-32">
-        <p className={cn(
-          "text-sm leading-relaxed text-muted-foreground pr-4",
-          isPlaying && "animate-fade-in"
-        )}>
-          {displayedText}
-          {isTyping && (
-            <span className="inline-block w-0.5 h-4 bg-primary ml-0.5 animate-blink" />
-          )}
-        </p>
+      {/* Lyrics Style Text Display */}
+      <ScrollArea className="flex-1 -mr-4 pr-4">
+        <div className="space-y-8 pb-8">
+
+          <div className={cn(
+            "text-base font-medium leading-loose transition-all duration-700",
+            isPlaying
+              ? "text-foreground/90 opacity-100"
+              : "text-muted-foreground opacity-60 blur-[0.5px]"
+          )}>
+            {script.text.split('\n').map((paragraph, index) => (
+              <p key={index} className="mb-8 last:mb-0">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2 text-xs text-muted-foreground pt-4 opacity-50">
+            <Music2 className="h-3 w-3" />
+            <span>안녕 교통정보 오리지널 스크립트</span>
+          </div>
+        </div>
       </ScrollArea>
     </div>
   );

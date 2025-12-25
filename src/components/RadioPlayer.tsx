@@ -1,12 +1,14 @@
+import { useState } from "react";
 import { Header } from "./Header";
-import { AlbumArt } from "./AlbumArt";
 import { TrackInfo } from "./TrackInfo";
 import { ProgressBar } from "./ProgressBar";
 import { PlayerControls } from "./PlayerControls";
 import { ScriptText } from "./ScriptText";
 import { VolumeControl } from "./VolumeControl";
 import { SpectrumAnalyzer } from "./SpectrumAnalyzer";
-import { PlaylistSheet } from "./PlaylistSheet";
+import { LyricsOverlay } from "./LyricsOverlay";
+import { VisualizerArea } from "./VisualizerArea";
+
 import { useRadioPlayer } from "@/hooks/useRadioPlayer";
 import { useAutoTheme } from "@/hooks/useAutoTheme";
 
@@ -27,63 +29,66 @@ export function RadioPlayer() {
   // Auto theme based on time of day
   useAutoTheme();
 
+  const [showLyrics, setShowLyrics] = useState(false);
+  const toggleLyrics = () => setShowLyrics(prev => !prev);
+
   return (
-    <div className="h-full flex flex-col bg-card">
-      <Header
-        isPlaying={isPlaying}
-        playlistButton={
-          <PlaylistSheet
-            currentScript={currentScript}
-            onSelectScript={playScript}
-          />
-        }
-      />
-      
-      <main className="flex-1 flex flex-col px-6 py-8 overflow-hidden">
-        {/* Album Art with LP animation */}
-        <AlbumArt isPlaying={isPlaying} />
+    <div className="h-full flex flex-col bg-gradient-to-br from-gray-50 to-gray-100 dark:from-zinc-900 dark:to-zinc-950 font-sans text-foreground transition-colors duration-500 dark:border-x dark:border-white/5 relative shadow-2xl">
+      <Header isPlaying={isPlaying} />
 
-        {/* Spectrum Analyzer */}
-        <div className="mt-6">
-          <SpectrumAnalyzer isPlaying={isPlaying} />
+      <main className="flex-1 flex flex-col px-6 py-6 overflow-hidden relative max-w-md mx-auto w-full">
+        {/* Main Content Layer */}
+        <div className={`flex-1 flex flex-col transition-all duration-500 ease-out ${showLyrics ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
+
+          {/* Visualizer Area */}
+          <VisualizerArea isPlaying={isPlaying} />
+
+          {/* Track Info Area - Minimalist */}
+          <div className="mb-8 z-10">
+            <TrackInfo
+              displayTitle={displayTitle}
+              isGlitching={isGlitching}
+              type={currentScript?.type}
+            />
+          </div>
         </div>
 
-        {/* Track Info with glitch effect */}
-        <TrackInfo
-          displayTitle={displayTitle}
-          isGlitching={isGlitching}
-          type={currentScript?.type}
+        {/* Lyrics Layer - Clean Overlay */}
+        <LyricsOverlay
+          showLyrics={showLyrics}
+          currentScript={currentScript}
+          isPlaying={isPlaying}
         />
-        
-        {/* Progress Bar */}
-        <div className="mt-8">
-          <ProgressBar progress={progress} isPlaying={isPlaying} />
-        </div>
-        
-        {/* Player Controls */}
-        <div className="mt-6">
-          <PlayerControls
-            isPlaying={isPlaying}
-            onTogglePlay={togglePlay}
-            onNext={next}
-          />
-        </div>
 
-        {/* Volume Control */}
-        <div className="mt-4">
-          <VolumeControl volume={volume} onVolumeChange={setVolume} />
-        </div>
+        {/* Controls Dock - Floating Card Style */}
+        <div className="mt-auto pt-6 pb-2 z-30">
+          {/* Progress */}
+          <div className="mb-6 px-1">
+            <ProgressBar progress={progress} isPlaying={isPlaying} />
+          </div>
 
-        {/* Script Text Display */}
-        <div className="mt-8 flex-1 bg-secondary/50 rounded-2xl p-4 overflow-hidden">
-          <ScriptText script={currentScript} isPlaying={isPlaying} />
+          {/* Main Controls */}
+          <div className="mb-8">
+            <PlayerControls
+              isPlaying={isPlaying}
+              onTogglePlay={togglePlay}
+              onNext={next}
+              showLyrics={showLyrics}
+              onToggleLyrics={toggleLyrics}
+            />
+          </div>
+
+          {/* Volume */}
+          <div className="px-4">
+            <VolumeControl volume={volume} onVolumeChange={setVolume} />
+          </div>
         </div>
       </main>
-      
-      {/* Footer branding */}
-      <footer className="py-3 text-center border-t border-border">
-        <p className="text-xs text-muted-foreground">
-          © 안녕 교통정보센터
+
+      {/* Modern Footer */}
+      <footer className="py-4 text-center">
+        <p className="text-[10px] font-medium tracking-widest text-muted-foreground/60 uppercase">
+          Hello Traffic Radio
         </p>
       </footer>
     </div>

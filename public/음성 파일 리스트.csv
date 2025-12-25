@@ -1,0 +1,26 @@
+id,type,isCreepy,파일명
+A-01,라디오 사연,FALSE,A-01
+A-02,라디오 사연,FALSE,A-02
+A-03,라디오 사연,FALSE,A-03
+A-04,라디오 사연,FALSE,A-04
+A-05,라디오 사연,FALSE,A-05
+A-06,라디오 사연,FALSE,A-06
+A-07,라디오 사연,FALSE,A-07
+A-08,라디오 사연,TRUE,A-08
+A-09,라디오 사연,TRUE,A-09
+A-10,라디오 사연,TRUE,A-10
+A-11,라디오 사연,TRUE,A-11
+A-12,라디오 사연,TRUE,A-12
+A-13,라디오 사연,TRUE,A-13
+A-14,라디오 사연,TRUE,A-14
+A-15,라디오 사연,TRUE,A-15
+B-01,교통정보,FALSE,B-01
+B-02,교통정보,FALSE,B-02
+B-03,교통정보,FALSE,B-03
+B-04,교통정보,TRUE,B-04
+B-05,교통정보,TRUE,B-05
+B-06,교통정보,TRUE,B-06
+B-07,교통정보,TRUE,B-07
+B-08,교통정보,TRUE,B-08
+B-09,교통정보,TRUE,B-09
+B-10,교통정보,TRUE,B-10

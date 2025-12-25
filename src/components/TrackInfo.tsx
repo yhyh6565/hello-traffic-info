@@ -13,19 +13,19 @@ export function TrackInfo({ displayTitle, isGlitching, type }: TrackInfoProps) {
 
   return (
     <div className={cn(
-      "text-center space-y-1 mt-10",
+      "text-center space-y-2",
       isGlitching && "crt-scanline vhs-noise"
     )}>
       <h2
         className={cn(
-          "text-lg font-bold transition-title",
-          isGlitching ? "glitch-text font-mono" : "text-foreground"
+          "text-2xl font-bold tracking-tight transition-all duration-300",
+          isGlitching ? "glitch-text font-mono text-red-500" : "text-foreground font-sans"
         )}
         data-text={displayTitle}
       >
         {displayTitle}
       </h2>
-      <p className="text-sm text-muted-foreground">
+      <p className="text-sm font-medium text-muted-foreground/80 uppercase tracking-wider">
         {artistText}
       </p>
     </div>

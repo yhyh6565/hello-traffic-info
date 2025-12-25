@@ -20,25 +20,55 @@ export function useRadioPlayer() {
 
   const { progress, startProgress, stopProgress, resetProgress } = useProgress();
 
-  // Select a random script that hasn't been played yet
+  // Track last played type to alternate
+  const [lastPlayedType, setLastPlayedType] = useState<'story' | 'traffic' | null>(null);
+
+  // Select a random script that hasn't been played yet, alternating types
   const selectRandomScript = useCallback((): Script => {
     const scripts = scriptsData as Script[];
-    const unplayedScripts = scripts.filter((s) => !playedIds.has(s.id));
-
-    // If all scripts have been played, reset
-    if (unplayedScripts.length === 0) {
-      setPlayedIds(new Set());
-      return scripts[Math.floor(Math.random() * scripts.length)];
+    
+    // Determine next type
+    let nextType: 'story' | 'traffic' = 'story'; // Default start
+    if (lastPlayedType === 'story') nextType = 'traffic';
+    else if (lastPlayedType === 'traffic') nextType = 'story';
+    else {
+      // First play: random start
+      nextType = Math.random() > 0.5 ? 'story' : 'traffic';
     }
 
-    return unplayedScripts[Math.floor(Math.random() * unplayedScripts.length)];
-  }, [playedIds]);
+    // Filter by type and unplayed status
+    let candidates = scripts.filter(s => s.type === nextType && !playedIds.has(s.id));
+    
+    // If no unplayed candidates of this type, reset history for this type
+    if (candidates.length === 0) {
+      // Create a set of IDs to keep (the other type's history)
+      const otherTypeIds = scripts
+        .filter(s => s.type !== nextType && playedIds.has(s.id))
+        .map(s => s.id);
+        
+      setPlayedIds(new Set(otherTypeIds));
+      
+      // Re-fetch candidates (all of this type are now valid)
+      candidates = scripts.filter(s => s.type === nextType);
+    }
+
+    // If still no candidates (shouldn't happen unless data is empty), fallback to any random
+    if (candidates.length === 0) {
+        return scripts[Math.floor(Math.random() * scripts.length)];
+    }
+
+    setLastPlayedType(nextType);
+    return candidates[Math.floor(Math.random() * candidates.length)];
+  }, [playedIds, lastPlayedType]);
 
   // Start playing a script
   const startPlayingScript = useCallback(
     (script: Script) => {
       setCurrentScript(script);
       setPlayedIds((prev) => new Set(prev).add(script.id));
+      // Ensure we track the type if started manually/arbitrarily
+      setLastPlayedType(script.type);
+      
       setIsPlaying(true);
       resetGlitch();
 
