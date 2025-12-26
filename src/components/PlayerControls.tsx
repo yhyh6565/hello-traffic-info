@@ -1,9 +1,10 @@
-import { Play, Pause, SkipBack, SkipForward, Quote } from "lucide-react";
+import { Play, Pause, SkipBack, SkipForward, Quote, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface PlayerControlsProps {
   isPlaying: boolean;
+  isLoading?: boolean;
   onTogglePlay: () => void;
   onNext: () => void;
   showLyrics: boolean;
@@ -12,6 +13,7 @@ interface PlayerControlsProps {
 
 export function PlayerControls({
   isPlaying,
+  isLoading = false,
   onTogglePlay,
   onNext,
   showLyrics,
@@ -40,6 +42,7 @@ export function PlayerControls({
           size="icon"
           className="h-10 w-10 text-muted-foreground hover:text-foreground"
           onClick={onNext}
+          disabled={isLoading}
         >
           <SkipBack className="h-6 w-6" />
         </Button>
@@ -47,10 +50,13 @@ export function PlayerControls({
         <Button
           variant="default"
           size="icon"
-          className="h-14 w-14 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg transition-transform active:scale-95"
+          className="h-14 w-14 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg transition-transform active:scale-95 disabled:opacity-80 disabled:cursor-not-allowed"
           onClick={onTogglePlay}
+          disabled={isLoading}
         >
-          {isPlaying ? (
+          {isLoading ? (
+            <Loader2 className="h-6 w-6 animate-spin" />
+          ) : isPlaying ? (
             <Pause className="h-6 w-6" />
           ) : (
             <Play className="h-6 w-6 ml-1" />
@@ -62,6 +68,7 @@ export function PlayerControls({
           size="icon"
           className="h-10 w-10 text-muted-foreground hover:text-foreground"
           onClick={onNext}
+          disabled={isLoading}
         >
           <SkipForward className="h-6 w-6" />
         </Button>

@@ -26,6 +26,7 @@ export function RadioPlayer() {
     next,
     setVolume,
     playScript,
+    isLoading
   } = useRadioPlayer();
 
   // Auto theme based on time of day
@@ -78,6 +79,7 @@ export function RadioPlayer() {
           <div className="mb-8">
             <PlayerControls
               isPlaying={isPlaying}
+              isLoading={isLoading}
               onTogglePlay={togglePlay}
               onNext={next}
               showLyrics={showLyrics}

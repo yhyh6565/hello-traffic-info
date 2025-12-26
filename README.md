@@ -1,73 +1,44 @@
-# Welcome to your Lovable project
+# 안녕 교통정보 (Hello Traffic Radio)
 
-## Project info
+**안녕 교통정보**는 웹소설 **[괴담에 떨어져도 출근을 해야 하는구나](https://page.kakao.com/content/59196558)**(작가: 백덕수)에 등장하는 가상의 라디오 방송, **'안녕 교통정보'**를 웹으로 구현한 팬 메이드 프로젝트입니다.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+> **⚠️ 알림**  
+> 이 프로젝트는 백덕수 작가님의 원작 **'괴담에 떨어져도 출근을 해야 하는구나'**를 기반으로 한 2차 창작물입니다.  
+> 모든 세계관 및 원작 설정의 저작권은 작가님과 카카오페이지에 있습니다.
 
-## How can I edit this code?
+## 📻 프로젝트 소개
 
-There are several ways of editing your application.
+이 서비스는 원작 소설 속에서 주인공이 듣는 라디오 방송을 실제로 청취하는 듯한 경험을 제공합니다.  
+평범한 교통정보 방송처럼 보이지만, 특정 조건에서 **기이한 사연(괴담)**이 송출되는 원작의 분위기를 살렸습니다.
 
-**Use Lovable**
+### 주요 기능
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+1.  **라디오 플레이어**
+    *   실제 라디오 주파수를 맞춘 듯한 감성적인 UI
+    *   사연(Story)과 교통정보(Traffic) 트랙 자동 재생
+    *   시간에 따라 변화하는 다크/라이트 모드 테마
 
-Changes made via Lovable will be committed automatically to this repo.
+2.  **대본 뷰어 (Lyrics/Script)**
+    *   **사연(Story)**: DJ와 청취자의 대화를 대화형(Dialog) 형식으로 출력
+    *   **교통정보(Traffic)**: 깔끔한 줄글 텍스트 제공
+    *   **자동 스크롤**: 다음 곡으로 넘어갈 때 대본 스크롤이 자동으로 상단으로 초기화
 
-**Use your preferred IDE**
+3.  **히든/공포 효과 (Glitch Effect)**
+    *   **'괴담'** 속성을 가진 트랙(Creepy) 재생 시, 5초 간격으로 화면 타이틀이 `Qterw-E-63`로 변조되는 글리치 효과 구현
+    *   공포스러운 분위기를 연출하는 시각적 요소 포함
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🛠 사용 기술
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+*   **Framework**: React (Vite)
+*   **Language**: TypeScript
+*   **Styling**: Tailwind CSS
+*   **Icons**: Lucide React
+*   **Components**: Shadcn UI (Radix based)
 
-Follow these steps:
+## 📝 저작권 표기 (Credits)
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+This project is a fan work based on the web novel:
+**"괴담에 떨어져도 출근을 해야 하는구나" (Even if I fall into a ghost story, I have to go to work)** by **Baek Deok-su (백덕수)** published on **KakaoPage**.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+---
+*Designed & Developed by [Developer Name]*

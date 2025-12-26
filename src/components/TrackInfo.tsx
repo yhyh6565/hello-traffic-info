@@ -13,8 +13,7 @@ export function TrackInfo({ displayTitle, isGlitching, type }: TrackInfoProps) {
 
   return (
     <div className={cn(
-      "text-center space-y-2",
-      isGlitching && "crt-scanline vhs-noise"
+      "text-center space-y-2"
     )}>
       <h2
         className={cn(

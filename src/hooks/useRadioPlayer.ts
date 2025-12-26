@@ -6,6 +6,7 @@ import { useGlitchEffect } from "./useGlitchEffect";
 
 export function useRadioPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [currentScript, setCurrentScript] = useState<Script | null>(null);
   const [playedIds, setPlayedIds] = useState<Set<string>>(new Set());
   const [volume, setVolume] = useState(70);
@@ -84,7 +85,7 @@ export function useRadioPlayer() {
       const nextScript = selectRandomScript();
       startPlayingScript(nextScript);
     }, 1000);
-  }, [selectRandomScript, resetGlitch]);
+  }, [resetGlitch]);
 
   // Start playing a script
   const startPlayingScript = useCallback(
@@ -98,28 +99,25 @@ export function useRadioPlayer() {
       resetGlitch();
 
       // Setup audio
+      setIsLoading(true); // Start loading
       audioRef.current.src = script.audioUrl;
       audioRef.current.load();
 
       const playPromise = audioRef.current.play();
       if (playPromise !== undefined) {
         playPromise
-          .then(() => {
-            setIsPlaying(true);
-            if (script.isCreepy) {
-              triggerGlitch();
-            }
-          })
           .catch((error) => {
+            // Auto-play policies might block playback if not initiated by user interaction
             console.error("Playback failed:", error);
             setIsPlaying(false);
+            setIsLoading(false);
           });
       }
     },
     [triggerGlitch, resetGlitch]
   );
 
-  // Event listeners for time and duration
+  // Event listeners for state sync
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -128,16 +126,37 @@ export function useRadioPlayer() {
     const updateDuration = () => setDuration(audio.duration);
     const onEnded = () => handleEnded();
 
+    // State sync handlers
+    const onWaiting = () => setIsLoading(true);
+    const onCanPlay = () => setIsLoading(false);
+    const onPlaying = () => {
+      setIsPlaying(true);
+      setIsLoading(false);
+      if (currentScript?.isCreepy) triggerGlitch();
+    };
+    const onPause = () => setIsPlaying(false);
+
     audio.addEventListener("timeupdate", updateTime);
     audio.addEventListener("loadedmetadata", updateDuration);
     audio.addEventListener("ended", onEnded);
+
+    // New status events
+    audio.addEventListener("waiting", onWaiting);
+    audio.addEventListener("canplay", onCanPlay);
+    audio.addEventListener("playing", onPlaying);
+    audio.addEventListener("pause", onPause);
 
     return () => {
       audio.removeEventListener("timeupdate", updateTime);
       audio.removeEventListener("loadedmetadata", updateDuration);
       audio.removeEventListener("ended", onEnded);
+
+      audio.removeEventListener("waiting", onWaiting);
+      audio.removeEventListener("canplay", onCanPlay);
+      audio.removeEventListener("playing", onPlaying);
+      audio.removeEventListener("pause", onPause);
     };
-  }, [handleEnded]);
+  }, [handleEnded, currentScript, triggerGlitch]);
 
   const play = useCallback(() => {
     if (audioRef.current && currentScript) {
@@ -198,5 +217,6 @@ export function useRadioPlayer() {
     pause,
     setVolume,
     playScript,
+    isLoading
   };
 }
