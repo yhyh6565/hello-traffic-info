@@ -1,7 +1,9 @@
+import { useRef } from "react";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Radio, AlertTriangle, Music2 } from "lucide-react";
 import type { Script } from "@/types/script";
+import { useAutoScroll } from "@/hooks/useAutoScroll";
 
 interface ScriptTextProps {
   script: Script | null;
@@ -9,6 +11,11 @@ interface ScriptTextProps {
 }
 
 export function ScriptText({ script, isPlaying }: ScriptTextProps) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to top when script ID changes
+  useAutoScroll(scrollRef, script?.id);
+
   if (!script) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-8 text-center bg-card/50 backdrop-blur-sm rounded-none">
@@ -38,7 +45,7 @@ export function ScriptText({ script, isPlaying }: ScriptTextProps) {
       </div>
 
       {/* Lyrics Style Text Display */}
-      <ScrollArea className="flex-1 -mr-4 pr-4">
+      <ScrollArea ref={scrollRef} className="flex-1 -mr-4 pr-4">
         <div className="space-y-8 pb-8">
 
           <div className={cn(
@@ -47,11 +54,28 @@ export function ScriptText({ script, isPlaying }: ScriptTextProps) {
               ? "text-foreground/90 opacity-100"
               : "text-muted-foreground opacity-60 blur-[0.5px]"
           )}>
-            {script.text.split('\n').map((paragraph, index) => (
-              <p key={index} className="mb-8 last:mb-0">
-                {paragraph}
-              </p>
-            ))}
+            {script.dialogue ? (
+              // Dialogue Mode
+              <div className="space-y-4">
+                {script.dialogue.map((line, index) => (
+                  <div key={index} className="leading-relaxed">
+                    <p className={line.speaker === "Listener" ? "text-muted-foreground" : "text-foreground"}>
+                      <span className="font-bold mr-2 opacity-100 text-foreground">
+                        {line.speaker === "DJ" ? "DJ" : "청취자"} :
+                      </span>
+                      {line.text}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              // Standard Text Mode
+              script.text.split('\n').map((paragraph, index) => (
+                <p key={index} className="mb-8 last:mb-0">
+                  {paragraph}
+                </p>
+              ))
+            )}
           </div>
 
           <div className="flex items-center gap-2 text-xs text-muted-foreground pt-4 opacity-50">

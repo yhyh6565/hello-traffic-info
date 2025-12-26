@@ -4,4 +4,6 @@ export interface Script {
   isCreepy: boolean;
   title: string;
   text: string;
+  dialogue?: Array<{ speaker: "DJ" | "Listener"; text: string }>;
+  audioUrl: string;
 }

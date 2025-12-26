@@ -1,15 +1,39 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import type { Script } from "@/types/script";
 import scriptsData from "@/data/scripts.json";
 import { getFormattedDate } from "@/lib/dateUtils";
 import { useGlitchEffect } from "./useGlitchEffect";
-import { useProgress } from "./useProgress";
 
 export function useRadioPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentScript, setCurrentScript] = useState<Script | null>(null);
   const [playedIds, setPlayedIds] = useState<Set<string>>(new Set());
   const [volume, setVolume] = useState(70);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+
+  // Audio instance
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Initialize audio on mount
+  useEffect(() => {
+    const audio = new Audio();
+    audio.volume = Math.max(0, Math.min(1, volume / 100)); // Clamp volume
+    audioRef.current = audio;
+
+    return () => {
+      audio.pause();
+      audio.src = "";
+      audioRef.current = null;
+    };
+  }, []);
+
+  // Sync volume
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = Math.max(0, Math.min(1, volume / 100));
+    }
+  }, [volume]);
 
   const defaultTitle = useMemo(() => getFormattedDate(), []);
 
@@ -18,85 +42,122 @@ export function useRadioPlayer() {
     defaultTitle
   );
 
-  const { progress, startProgress, stopProgress, resetProgress } = useProgress();
-
   // Track last played type to alternate
   const [lastPlayedType, setLastPlayedType] = useState<'story' | 'traffic' | null>(null);
 
-  // Select a random script that hasn't been played yet, alternating types
+  // Select a random script
   const selectRandomScript = useCallback((): Script => {
     const scripts = scriptsData as Script[];
-    
-    // Determine next type
-    let nextType: 'story' | 'traffic' = 'story'; // Default start
+
+    let nextType: 'story' | 'traffic' = 'story';
     if (lastPlayedType === 'story') nextType = 'traffic';
     else if (lastPlayedType === 'traffic') nextType = 'story';
     else {
-      // First play: random start
       nextType = Math.random() > 0.5 ? 'story' : 'traffic';
     }
 
-    // Filter by type and unplayed status
     let candidates = scripts.filter(s => s.type === nextType && !playedIds.has(s.id));
-    
-    // If no unplayed candidates of this type, reset history for this type
+
     if (candidates.length === 0) {
-      // Create a set of IDs to keep (the other type's history)
       const otherTypeIds = scripts
         .filter(s => s.type !== nextType && playedIds.has(s.id))
         .map(s => s.id);
-        
       setPlayedIds(new Set(otherTypeIds));
-      
-      // Re-fetch candidates (all of this type are now valid)
       candidates = scripts.filter(s => s.type === nextType);
     }
 
-    // If still no candidates (shouldn't happen unless data is empty), fallback to any random
     if (candidates.length === 0) {
-        return scripts[Math.floor(Math.random() * scripts.length)];
+      return scripts[Math.floor(Math.random() * scripts.length)];
     }
 
     setLastPlayedType(nextType);
     return candidates[Math.floor(Math.random() * candidates.length)];
   }, [playedIds, lastPlayedType]);
 
+  // Handle track ending (autoplay next)
+  const handleEnded = useCallback(() => {
+    setIsPlaying(false);
+    resetGlitch();
+
+    // Auto play next after a short delay
+    setTimeout(() => {
+      const nextScript = selectRandomScript();
+      startPlayingScript(nextScript);
+    }, 1000);
+  }, [selectRandomScript, resetGlitch]);
+
   // Start playing a script
   const startPlayingScript = useCallback(
     (script: Script) => {
+      if (!audioRef.current) return;
+
       setCurrentScript(script);
       setPlayedIds((prev) => new Set(prev).add(script.id));
-      // Ensure we track the type if started manually/arbitrarily
       setLastPlayedType(script.type);
-      
-      setIsPlaying(true);
+
       resetGlitch();
 
-      startProgress(script.text.length, () => {
-        setIsPlaying(false);
-      });
+      // Setup audio
+      audioRef.current.src = script.audioUrl;
+      audioRef.current.load();
 
-      if (script.isCreepy) {
-        triggerGlitch();
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setIsPlaying(true);
+            if (script.isCreepy) {
+              triggerGlitch();
+            }
+          })
+          .catch((error) => {
+            console.error("Playback failed:", error);
+            setIsPlaying(false);
+          });
       }
     },
-    [startProgress, triggerGlitch, resetGlitch]
+    [triggerGlitch, resetGlitch]
   );
 
-  // Play random script
+  // Event listeners for time and duration
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const updateTime = () => setCurrentTime(audio.currentTime);
+    const updateDuration = () => setDuration(audio.duration);
+    const onEnded = () => handleEnded();
+
+    audio.addEventListener("timeupdate", updateTime);
+    audio.addEventListener("loadedmetadata", updateDuration);
+    audio.addEventListener("ended", onEnded);
+
+    return () => {
+      audio.removeEventListener("timeupdate", updateTime);
+      audio.removeEventListener("loadedmetadata", updateDuration);
+      audio.removeEventListener("ended", onEnded);
+    };
+  }, [handleEnded]);
+
   const play = useCallback(() => {
-    const script = selectRandomScript();
-    startPlayingScript(script);
-  }, [selectRandomScript, startPlayingScript]);
+    if (audioRef.current && currentScript) {
+      audioRef.current.play();
+      setIsPlaying(true);
+    } else {
+      // If no script loaded, pick random
+      const script = selectRandomScript();
+      startPlayingScript(script);
+    }
+  }, [currentScript, selectRandomScript, startPlayingScript]);
 
-  // Pause handler
   const pause = useCallback(() => {
-    setIsPlaying(false);
-    stopProgress();
-    resetGlitch();
-  }, [stopProgress, resetGlitch]);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+      resetGlitch();
+    }
+  }, [resetGlitch]);
 
-  // Toggle play/pause
   const togglePlay = useCallback(() => {
     if (isPlaying) {
       pause();
@@ -105,26 +166,28 @@ export function useRadioPlayer() {
     }
   }, [isPlaying, play, pause]);
 
-  // Skip to next
   const next = useCallback(() => {
-    pause();
-    play();
-  }, [pause, play]);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
+    const script = selectRandomScript();
+    startPlayingScript(script);
+  }, [selectRandomScript, startPlayingScript]);
 
-  // Play specific script
   const playScript = useCallback(
     (script: Script) => {
-      stopProgress();
-      resetGlitch();
       startPlayingScript(script);
     },
-    [stopProgress, resetGlitch, startPlayingScript]
+    [startPlayingScript]
   );
 
   return {
     isPlaying,
     currentScript,
-    progress,
+    progress: duration > 0 ? (currentTime / duration) * 100 : 0,
+    currentTime,
+    duration,
     displayTitle,
     isGlitching,
     defaultTitle,

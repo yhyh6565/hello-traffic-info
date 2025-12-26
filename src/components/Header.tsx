@@ -13,7 +13,7 @@ export function Header({ isPlaying = false }: HeaderProps) {
       {/* Left: Minimal Station ID */}
       <div className="flex items-center gap-2 text-primary/80">
         <Radio className="w-5 h-5" />
-        <span className="text-xs font-bold tracking-widest uppercase hidden sm:block">Hello Traffic</span>
+        <span className="text-xs font-bold tracking-widest uppercase hidden sm:block">안녕 교통정보</span>
       </div>
 
       {/* Center: Live Indicator */}

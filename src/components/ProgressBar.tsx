@@ -2,15 +2,16 @@ import { cn } from "@/lib/utils";
 
 interface ProgressBarProps {
   progress: number;
+  currentTime: number;
+  duration: number;
   isPlaying: boolean;
 }
 
-export function ProgressBar({ progress, isPlaying }: ProgressBarProps) {
-  const formatTime = (percentage: number) => {
-    // Rough estimate: full track is about 2 minutes
-    const totalSeconds = Math.round((percentage / 100) * 120);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
+export function ProgressBar({ progress, currentTime, duration, isPlaying }: ProgressBarProps) {
+  const formatTime = (time: number) => {
+    if (Number.isNaN(time)) return "0:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
     return `${minutes}:${String(seconds).padStart(2, "0")}`;
   };
 
@@ -26,8 +27,8 @@ export function ProgressBar({ progress, isPlaying }: ProgressBarProps) {
         />
       </div>
       <div className="flex justify-between text-xs text-muted-foreground">
-        <span>{formatTime(progress)}</span>
-        <span>2:00</span>
+        <span>{formatTime(currentTime)}</span>
+        <span>{formatTime(duration)}</span>
       </div>
     </div>
   );

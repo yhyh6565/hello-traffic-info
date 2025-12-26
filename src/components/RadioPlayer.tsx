@@ -17,6 +17,8 @@ export function RadioPlayer() {
     isPlaying,
     currentScript,
     progress,
+    currentTime,
+    duration,
     displayTitle,
     isGlitching,
     volume,
@@ -64,7 +66,12 @@ export function RadioPlayer() {
         <div className="mt-auto pt-6 pb-2 z-30">
           {/* Progress */}
           <div className="mb-6 px-1">
-            <ProgressBar progress={progress} isPlaying={isPlaying} />
+            <ProgressBar
+              progress={progress}
+              currentTime={currentTime}
+              duration={duration}
+              isPlaying={isPlaying}
+            />
           </div>
 
           {/* Main Controls */}
@@ -86,9 +93,9 @@ export function RadioPlayer() {
       </main>
 
       {/* Modern Footer */}
-      <footer className="py-4 text-center">
-        <p className="text-[10px] font-medium tracking-widest text-muted-foreground/60 uppercase">
-          Hello Traffic Radio
+      <footer className="py-4 text-center space-y-1">
+        <p className="text-[9px] text-muted-foreground/40 font-light">
+          Based on the novel <span className="font-medium">"괴담에 떨어져도 출근을 해야 하는구나"</span> by 백덕수 (카카오페이지)
         </p>
       </footer>
     </div>
