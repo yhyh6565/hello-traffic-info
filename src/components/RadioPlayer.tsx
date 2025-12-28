@@ -4,7 +4,6 @@ import { TrackInfo } from "./TrackInfo";
 import { ProgressBar } from "./ProgressBar";
 import { PlayerControls } from "./PlayerControls";
 import { ScriptText } from "./ScriptText";
-import { VolumeControl } from "./VolumeControl";
 import { SpectrumAnalyzer } from "./SpectrumAnalyzer";
 import { LyricsOverlay } from "./LyricsOverlay";
 import { VisualizerArea } from "./VisualizerArea";
@@ -76,7 +75,7 @@ export function RadioPlayer() {
           </div>
 
           {/* Main Controls */}
-          <div className="mb-8">
+          <div className="mb-4">
             <PlayerControls
               isPlaying={isPlaying}
               isLoading={isLoading}
@@ -85,11 +84,6 @@ export function RadioPlayer() {
               showLyrics={showLyrics}
               onToggleLyrics={toggleLyrics}
             />
-          </div>
-
-          {/* Volume */}
-          <div className="px-4">
-            <VolumeControl volume={volume} onVolumeChange={setVolume} />
           </div>
         </div>
       </main>
