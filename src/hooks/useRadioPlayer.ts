@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import type { Script } from "@/types/script";
-import scriptsData from "@/data/scripts.json";
+import { loadScriptsFromCSV } from "@/lib/csvParser";
 import { getFormattedDate } from "@/lib/dateUtils";
 import { useGlitchEffect } from "./useGlitchEffect";
 
@@ -12,6 +12,12 @@ export function useRadioPlayer() {
   const [volume, setVolume] = useState(70);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+  const [scripts, setScripts] = useState<Script[]>([]);
+
+  // Load scripts from CSV on mount
+  useEffect(() => {
+    loadScriptsFromCSV().then(setScripts).catch(console.error);
+  }, []);
 
   // Audio instance
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -47,8 +53,8 @@ export function useRadioPlayer() {
   const [lastPlayedType, setLastPlayedType] = useState<'story' | 'traffic' | null>(null);
 
   // Select a random script
-  const selectRandomScript = useCallback((): Script => {
-    const scripts = scriptsData as Script[];
+  const selectRandomScript = useCallback((): Script | null => {
+    if (scripts.length === 0) return null;
 
     let nextType: 'story' | 'traffic' = 'story';
     if (lastPlayedType === 'story') nextType = 'traffic';
@@ -73,19 +79,7 @@ export function useRadioPlayer() {
 
     setLastPlayedType(nextType);
     return candidates[Math.floor(Math.random() * candidates.length)];
-  }, [playedIds, lastPlayedType]);
-
-  // Handle track ending (autoplay next)
-  const handleEnded = useCallback(() => {
-    setIsPlaying(false);
-    resetGlitch();
-
-    // Auto play next after a short delay
-    setTimeout(() => {
-      const nextScript = selectRandomScript();
-      startPlayingScript(nextScript);
-    }, 1000);
-  }, [resetGlitch]);
+  }, [scripts, playedIds, lastPlayedType]);
 
   // Start playing a script
   const startPlayingScript = useCallback(
@@ -116,6 +110,18 @@ export function useRadioPlayer() {
     },
     [triggerGlitch, resetGlitch]
   );
+
+  // Handle track ending (autoplay next)
+  const handleEnded = useCallback(() => {
+    setIsPlaying(false);
+    resetGlitch();
+
+    // Auto play next after a short delay
+    setTimeout(() => {
+      const nextScript = selectRandomScript();
+      if (nextScript) startPlayingScript(nextScript);
+    }, 1000);
+  }, [resetGlitch, selectRandomScript, startPlayingScript]);
 
   // Event listeners for state sync
   useEffect(() => {
@@ -165,7 +171,7 @@ export function useRadioPlayer() {
     } else {
       // If no script loaded, pick random
       const script = selectRandomScript();
-      startPlayingScript(script);
+      if (script) startPlayingScript(script);
     }
   }, [currentScript, selectRandomScript, startPlayingScript]);
 
@@ -191,7 +197,7 @@ export function useRadioPlayer() {
       setIsPlaying(false);
     }
     const script = selectRandomScript();
-    startPlayingScript(script);
+    if (script) startPlayingScript(script);
   }, [selectRandomScript, startPlayingScript]);
 
   const playScript = useCallback(
