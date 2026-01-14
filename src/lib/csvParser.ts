@@ -1,7 +1,7 @@
 import type { Script } from "@/types/script";
 
 export async function loadScriptsFromCSV(): Promise<Script[]> {
-  const response = await fetch("/음성 및 대본.csv");
+  const response = await fetch("/scripts.csv");
   const text = await response.text();
   
   return parseCSV(text);
