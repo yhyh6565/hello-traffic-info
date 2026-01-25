@@ -51,6 +51,14 @@ export default {
           DEFAULT: "hsl(var(--glitch))",
           foreground: "hsl(var(--glitch-foreground))",
         },
+        /* Retro Radio Palette */
+        radio: {
+          wood: "hsl(var(--radio-wood))",
+          face: "hsl(var(--radio-face))",
+          accent: "hsl(var(--radio-accent))",
+          grille: "hsl(var(--radio-grille))",
+          indicator: "hsl(var(--radio-indicator))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -75,6 +83,7 @@ export default {
       },
       fontFamily: {
         sans: ["'Noto Sans KR'", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        serif: ["'Gowun Batang'", "'Playfair Display'", "serif"],
         mono: ["'Courier New'", "monospace"],
       },
       keyframes: {

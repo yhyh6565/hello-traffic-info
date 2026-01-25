@@ -1,110 +1,100 @@
 @import "@fontsource/noto-sans-kr/400.css";
 @import "@fontsource/noto-sans-kr/500.css";
 @import "@fontsource/noto-sans-kr/700.css";
+@import "@fontsource/playfair-display/400.css";
+@import "@fontsource/playfair-display/700.css";
+@import "@fontsource/gowun-batang/400.css";
+@import "@fontsource/gowun-batang/700.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* 안녕 교통정보 - Perfect Camouflage Design System */
+/* 안녕 교통정보 - Perfect Camouflage Design System (Retro Radio Edition) */
 
 @layer base {
   :root {
-    /* Core Brand Colors - Trust-inspiring Blue & White */
-    --background: 220 20% 96%; /* Soft gray desktop background */
-    --foreground: 220 20% 15%;
+    /* Retro Radio Palette */
+    --radio-wood: 27 30% 22%;
+    /* #4A3728 - Deep Walnut */
+    --radio-face: 42 60% 85%;
+    /* #F4E4BC - Aged Cream */
+    --radio-accent: 43 46% 56%;
+    /* #C5A059 - Brass/Gold */
+    --radio-grille: 25 17% 14%;
+    /* #2A231E - Speaker Cloth */
+    --radio-indicator: 24 100% 44%;
+    /* #E05A00 - Warm Orange */
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 20% 15%;
+    /* Core Brand Colors - Mapped to Retro Palette */
+    --background: var(--radio-wood);
+    /* Main background is now wood */
+    --foreground: 42 60% 85%;
+    /* Text on wood is cream */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 15%;
+    --card: var(--radio-face);
+    /* Cards are Faceplates */
+    --card-foreground: 27 30% 22%;
+    /* Text on face is walnut */
 
-    /* Primary - Official Traffic Blue */
-    --primary: 220 100% 50%; /* #0055FF equivalent */
+    --popover: var(--radio-face);
+    --popover-foreground: 27 30% 22%;
+
+    /* Primary - Action Color */
+    --primary: var(--radio-indicator);
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Subtle Gray */
-    --secondary: 220 15% 94%;
-    --secondary-foreground: 220 20% 25%;
+    /* Secondary - Accents */
+    --secondary: var(--radio-accent);
+    --secondary-foreground: 27 30% 22%;
 
-    /* Muted - For subtle UI elements */
-    --muted: 220 15% 92%;
-    --muted-foreground: 220 10% 50%;
+    /* Muted */
+    --muted: 27 20% 30%;
+    --muted-foreground: 42 40% 70%;
 
     /* Accent */
-    --accent: 220 20% 96%;
-    --accent-foreground: 220 20% 15%;
+    --accent: var(--radio-accent);
+    --accent-foreground: 27 30% 22%;
 
-    /* Destructive - For Creepy Glitch */
+    /* Destructive */
     --destructive: 0 85% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Glitch Color */
+    /* Glitch Color (Retained for atmosphere) */
     --glitch: 0 100% 45%;
     --glitch-foreground: 0 0% 100%;
 
-    --border: 220 15% 88%;
-    --input: 220 15% 88%;
-    --ring: 220 100% 50%;
+    --border: var(--radio-accent);
+    --input: 42 30% 80%;
+    --ring: var(--radio-indicator);
 
-    --radius: 1rem;
+    --radius: 0.5rem;
+    /* Slightly reduced for retro mechanical feel */
 
     /* Mobile Frame Shadows */
-    --shadow-mobile: 0 30px 60px rgba(0, 0, 0, 0.12);
-    --shadow-album: 0 8px 30px rgba(0, 85, 255, 0.15);
+    --shadow-mobile: 0 30px 60px rgba(0, 0, 0, 0.5);
+    --shadow-album: 2px 2px 5px rgba(0, 0, 0, 0.4);
 
-    /* Sidebar (keeping defaults) */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar */
+    --sidebar-background: var(--radio-wood);
+    --sidebar-foreground: var(--radio-face);
+    --sidebar-primary: var(--radio-accent);
+    --sidebar-primary-foreground: var(--radio-wood);
+    --sidebar-accent: 27 25% 28%;
+    --sidebar-accent-foreground: var(--radio-face);
+    --sidebar-border: var(--radio-accent);
+    --sidebar-ring: var(--radio-indicator);
   }
 
   .dark {
-    --background: 220 25% 8%;
-    --foreground: 220 15% 95%;
-
-    --card: 220 25% 12%;
-    --card-foreground: 220 15% 95%;
-
-    --popover: 220 25% 12%;
-    --popover-foreground: 220 15% 95%;
-
-    --primary: 220 100% 55%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 220 20% 18%;
-    --secondary-foreground: 220 15% 85%;
-
-    --muted: 220 20% 15%;
-    --muted-foreground: 220 15% 60%;
-
-    --accent: 220 20% 18%;
-    --accent-foreground: 220 15% 95%;
-
-    --destructive: 0 75% 50%;
-    --destructive-foreground: 0 0% 100%;
-
-    --glitch: 0 100% 50%;
-    --glitch-foreground: 0 0% 100%;
-
-    --border: 220 20% 20%;
-    --input: 220 20% 20%;
-    --ring: 220 100% 55%;
-
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Single Retro Mode - Dark Mode is just 'Night Radio' (same wood, dimmer face?) 
+       For now, mapped identical to root to enforce the Wood theme constantly 
+    */
+    --background: 27 30% 15%;
+    --foreground: 42 50% 80%;
+    --card: 27 25% 18%;
+    --card-foreground: 42 50% 80%;
+    /* ... keeping it simple for now, relying on the main palette */
   }
 }
 
@@ -122,11 +112,13 @@
 }
 
 @layer components {
+
   /* LP Disc Spin Animation */
   @keyframes spin-lp {
     from {
       transform: rotate(0deg);
     }
+
     to {
       transform: rotate(360deg);
     }
@@ -144,30 +136,35 @@
         -2px 0 0 rgba(255, 0, 0, 0.7),
         2px 0 0 rgba(0, 255, 255, 0.7);
     }
+
     20% {
       transform: translate(-2px, 2px);
       text-shadow:
         -3px 0 0 rgba(255, 0, 0, 0.8),
         3px 0 0 rgba(0, 255, 255, 0.8);
     }
+
     40% {
       transform: translate(2px, -2px);
       text-shadow:
         -2px 2px 0 rgba(255, 0, 0, 0.9),
         2px -2px 0 rgba(0, 255, 255, 0.9);
     }
+
     60% {
       transform: translate(-1px, 1px);
       text-shadow:
         -4px 0 0 rgba(255, 0, 0, 0.7),
         4px 0 0 rgba(0, 255, 255, 0.7);
     }
+
     80% {
       transform: translate(1px, -1px);
       text-shadow:
         -2px 0 0 rgba(255, 0, 0, 0.8),
         2px 0 0 rgba(0, 255, 255, 0.8);
     }
+
     100% {
       transform: translate(0);
       text-shadow:
@@ -180,22 +177,54 @@
     0% {
       transform: translateY(-100%);
     }
+
     100% {
       transform: translateY(100%);
     }
   }
 
   @keyframes vhs-noise {
-    0%, 100% { opacity: 0.1; }
-    10% { opacity: 0.15; }
-    20% { opacity: 0.08; }
-    30% { opacity: 0.12; }
-    40% { opacity: 0.1; }
-    50% { opacity: 0.14; }
-    60% { opacity: 0.09; }
-    70% { opacity: 0.11; }
-    80% { opacity: 0.13; }
-    90% { opacity: 0.1; }
+
+    0%,
+    100% {
+      opacity: 0.1;
+    }
+
+    10% {
+      opacity: 0.15;
+    }
+
+    20% {
+      opacity: 0.08;
+    }
+
+    30% {
+      opacity: 0.12;
+    }
+
+    40% {
+      opacity: 0.1;
+    }
+
+    50% {
+      opacity: 0.14;
+    }
+
+    60% {
+      opacity: 0.09;
+    }
+
+    70% {
+      opacity: 0.11;
+    }
+
+    80% {
+      opacity: 0.13;
+    }
+
+    90% {
+      opacity: 0.1;
+    }
   }
 
   .glitch-text {
@@ -250,13 +279,11 @@
     right: 0;
     bottom: 0;
     background:
-      repeating-linear-gradient(
-        0deg,
+      repeating-linear-gradient(0deg,
         rgba(0, 0, 0, 0.15) 0px,
         rgba(0, 0, 0, 0.15) 1px,
         transparent 1px,
-        transparent 2px
-      );
+        transparent 2px);
     pointer-events: none;
     z-index: 5;
   }
@@ -274,12 +301,10 @@
     right: 0;
     bottom: 0;
     background-image:
-      repeating-linear-gradient(
-        90deg,
+      repeating-linear-gradient(90deg,
         rgba(0, 0, 0, 0.05) 0px,
         rgba(255, 255, 255, 0.03) 1px,
-        rgba(0, 0, 0, 0.05) 2px
-      );
+        rgba(0, 0, 0, 0.05) 2px);
     animation: vhs-noise 0.5s infinite;
     pointer-events: none;
     z-index: 10;
@@ -288,9 +313,12 @@
 
   /* Progress Bar Animation */
   @keyframes progress-pulse {
-    0%, 100% {
+
+    0%,
+    100% {
       opacity: 1;
     }
+
     50% {
       opacity: 0.7;
     }
@@ -302,9 +330,12 @@
 
   /* Waveform Animation */
   @keyframes wave {
-    0%, 100% {
+
+    0%,
+    100% {
       transform: scaleY(1);
     }
+
     50% {
       transform: scaleY(0.5);
     }
@@ -314,18 +345,35 @@
     animation: wave 0.5s ease-in-out infinite;
   }
 
-  .wave-bar:nth-child(1) { animation-delay: 0s; }
-  .wave-bar:nth-child(2) { animation-delay: 0.1s; }
-  .wave-bar:nth-child(3) { animation-delay: 0.2s; }
-  .wave-bar:nth-child(4) { animation-delay: 0.3s; }
-  .wave-bar:nth-child(5) { animation-delay: 0.4s; }
+  .wave-bar:nth-child(1) {
+    animation-delay: 0s;
+  }
+
+  .wave-bar:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  .wave-bar:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+
+  .wave-bar:nth-child(4) {
+    animation-delay: 0.3s;
+  }
+
+  .wave-bar:nth-child(5) {
+    animation-delay: 0.4s;
+  }
 
   /* ON AIR LED Pulse Animation */
   @keyframes pulse-led {
-    0%, 100% {
+
+    0%,
+    100% {
       opacity: 1;
       box-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
     }
+
     50% {
       opacity: 0.6;
       box-shadow: 0 0 4px rgba(239, 68, 68, 0.4);
@@ -338,10 +386,14 @@
 
   /* Typing Cursor Blink Animation */
   @keyframes blink {
-    0%, 50% {
+
+    0%,
+    50% {
       opacity: 1;
     }
-    51%, 100% {
+
+    51%,
+    100% {
       opacity: 0;
     }
   }
@@ -352,12 +404,51 @@
 
   /* Radio Static Effect */
   @keyframes static-noise {
-    0% { background-position: 0 0; }
-    100% { background-position: 100% 100%; }
+    0% {
+      background-position: 0 0;
+    }
+
+    100% {
+      background-position: 100% 100%;
+    }
   }
 }
 
 @layer utilities {
+
+  /* Radio Texture Utilities */
+  .bg-wood-pattern {
+    background-color: hsl(27, 30%, 22%);
+    background-image:
+      repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 12px),
+      repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 1px, transparent 1px, transparent 24px);
+  }
+
+  .bg-speaker-grille {
+    background-color: hsl(25, 17%, 14%);
+    background-image:
+      radial-gradient(hsla(43, 46%, 56%, 0.3) 15%, transparent 16%),
+      radial-gradient(hsla(43, 46%, 56%, 0.3) 15%, transparent 16%);
+    background-size: 6px 6px;
+    background-position: 0 0, 3px 3px;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+  }
+
+  .btn-retro {
+    @apply border-b-4 border-r-2 active:border-0 active:translate-y-1 transition-all;
+    border-color: rgba(0, 0, 0, 0.3);
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .panel-inset {
+    box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.3), inset -1px -1px 2px rgba(255, 255, 255, 0.5);
+    @apply border border-opacity-20 border-black;
+  }
+
+  .text-shadow-retro {
+    text-shadow: 1px 1px 0px rgba(230, 210, 180, 0.4);
+  }
+
   .text-glitch {
     color: hsl(var(--glitch));
   }
@@ -372,5 +463,16 @@
     padding-bottom: env(safe-area-inset-bottom);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
+  }
+
+  /* Loal Theme Wrapper for Faceplate */
+  .radio-face-theme {
+    --foreground: 27 30% 22%;
+    /* Walnut */
+    --muted-foreground: 27 20% 50%;
+    /* Lite Walnut */
+    --primary: 24 100% 44%;
+    /* Orange */
+    --accent-foreground: 27 30% 22%;
   }
 }

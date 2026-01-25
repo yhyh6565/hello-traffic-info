@@ -18,7 +18,7 @@ export function TrackInfo({ displayTitle, isGlitching, type }: TrackInfoProps) {
       <h2
         className={cn(
           "text-2xl font-bold tracking-tight transition-all duration-300",
-          isGlitching ? "glitch-text font-mono text-red-500" : "text-foreground font-sans"
+          isGlitching ? "glitch-text font-mono text-red-500" : "text-radio-wood font-serif"
         )}
         data-text={displayTitle}
       >
