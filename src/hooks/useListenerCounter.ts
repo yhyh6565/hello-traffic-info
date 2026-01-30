@@ -10,7 +10,7 @@ interface UseListenerCounterReturn {
 }
 
 const COUNTER_CONFIG = {
-  START_COUNT: 100,
+  START_COUNT: 444,
   TARGET_MIN: 1000,
   TARGET_MAX: 1500,
   INCREMENT_MIN: 5,
@@ -18,8 +18,7 @@ const COUNTER_CONFIG = {
   INTERVAL_MIN: 300,
   INTERVAL_MAX: 800,
   GLITCH_NUMBER: 444,
-  GLITCH_DURATION_MIN: 3000,
-  GLITCH_DURATION_MAX: 5000,
+  GLITCH_DURATION: 10000, // 10 seconds at 444
 } as const;
 
 function getRandomInRange(min: number, max: number): number {
@@ -40,7 +39,7 @@ export function useListenerCounter({ isPlaying }: UseListenerCounterProps): UseL
   }, []);
 
   const scheduleNextIncrement = useCallback(() => {
-    if (!isPlaying) return;
+    if (!isPlaying || isGlitching) return;
 
     const interval = getRandomInRange(COUNTER_CONFIG.INTERVAL_MIN, COUNTER_CONFIG.INTERVAL_MAX);
     
@@ -51,20 +50,15 @@ export function useListenerCounter({ isPlaying }: UseListenerCounterProps): UseL
 
         // Check if target reached
         if (newCount >= targetRef.current) {
-          // Trigger glitch effect
+          // Trigger glitch effect - drop to 444
           setIsGlitching(true);
           
-          // Schedule reset after glitch duration
-          const glitchDuration = getRandomInRange(
-            COUNTER_CONFIG.GLITCH_DURATION_MIN,
-            COUNTER_CONFIG.GLITCH_DURATION_MAX
-          );
-          
+          // Schedule recovery after 10 seconds
           setTimeout(() => {
             setIsGlitching(false);
-            setCount(COUNTER_CONFIG.START_COUNT);
+            setCount(COUNTER_CONFIG.GLITCH_NUMBER);
             targetRef.current = getRandomInRange(COUNTER_CONFIG.TARGET_MIN, COUNTER_CONFIG.TARGET_MAX);
-          }, glitchDuration);
+          }, COUNTER_CONFIG.GLITCH_DURATION);
 
           return COUNTER_CONFIG.GLITCH_NUMBER;
         }
@@ -72,10 +66,8 @@ export function useListenerCounter({ isPlaying }: UseListenerCounterProps): UseL
         return newCount;
       });
 
-      // Schedule next increment if not glitching
-      if (!isGlitching) {
-        scheduleNextIncrement();
-      }
+      // Schedule next increment
+      scheduleNextIncrement();
     }, interval);
   }, [isPlaying, isGlitching]);
 
@@ -92,7 +84,7 @@ export function useListenerCounter({ isPlaying }: UseListenerCounterProps): UseL
 
   // Restart counting after glitch ends
   useEffect(() => {
-    if (isPlaying && !isGlitching && count === COUNTER_CONFIG.START_COUNT) {
+    if (isPlaying && !isGlitching && count === COUNTER_CONFIG.GLITCH_NUMBER) {
       scheduleNextIncrement();
     }
   }, [isPlaying, isGlitching, count, scheduleNextIncrement]);
