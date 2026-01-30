@@ -453,27 +453,164 @@
     color: hsl(var(--glitch));
   }
 
-  /* LED Text Effects for Listener Counter */
-  .led-text-green {
-    color: #22c55e;
-    text-shadow:
-      0 0 5px rgba(34, 197, 94, 0.8),
-      0 0 10px rgba(34, 197, 94, 0.5),
-      0 0 15px rgba(34, 197, 94, 0.3);
+  /* Flip Counter (Split-Flap Display) Styles */
+  .flip-counter-wrapper {
+    @apply flex flex-col items-center gap-2 py-3;
   }
 
-  .led-text-red {
-    color: #ef4444;
-    text-shadow:
-      0 0 5px rgba(239, 68, 68, 0.9),
-      0 0 10px rgba(239, 68, 68, 0.6),
-      0 0 20px rgba(239, 68, 68, 0.4);
-    animation: led-flicker 0.15s infinite;
+  .flip-counter-label {
+    @apply flex items-center gap-2 text-[10px] font-mono tracking-widest uppercase;
+    color: hsl(var(--muted-foreground));
   }
 
-  @keyframes led-flicker {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.85; }
+  .flip-counter-label-divider {
+    @apply opacity-50;
+  }
+
+  .flip-cards-row {
+    @apply flex items-center gap-0.5;
+  }
+
+  .flip-card-container {
+    perspective: 200px;
+  }
+
+  .flip-card {
+    @apply relative w-6 h-9 rounded-sm overflow-hidden;
+    background-color: hsl(25, 17%, 14%); /* radio-grille */
+    border: 1px solid hsl(43, 46%, 56%, 0.4); /* radio-accent with transparency */
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+      0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
+  }
+
+  .flip-card-top,
+  .flip-card-bottom {
+    @apply absolute left-0 right-0 h-1/2 overflow-hidden flex items-center justify-center;
+  }
+
+  .flip-card-top {
+    @apply top-0;
+    background: linear-gradient(
+      to bottom,
+      hsl(25, 17%, 18%) 0%,
+      hsl(25, 17%, 14%) 100%
+    );
+  }
+
+  .flip-card-bottom {
+    @apply bottom-0;
+    background: linear-gradient(
+      to bottom,
+      hsl(25, 17%, 12%) 0%,
+      hsl(25, 17%, 10%) 100%
+    );
+  }
+
+  .flip-card-digit {
+    @apply font-mono text-lg font-bold;
+    color: hsl(42, 60%, 85%); /* radio-face cream */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+
+  .flip-card-top .flip-card-digit {
+    transform: translateY(50%);
+  }
+
+  .flip-card-bottom .flip-card-digit {
+    transform: translateY(-50%);
+  }
+
+  .flip-card-divider {
+    @apply absolute left-0 right-0 h-px z-10;
+    top: 50%;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      hsl(43, 46%, 40%) 20%,
+      hsl(43, 46%, 40%) 80%,
+      transparent 100%
+    );
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Flip animation */
+  .flip-card-flipping {
+    animation: flip-tick 0.3s ease-out;
+  }
+
+  @keyframes flip-tick {
+    0% {
+      transform: rotateX(0deg);
+    }
+    50% {
+      transform: rotateX(-10deg);
+    }
+    100% {
+      transform: rotateX(0deg);
+    }
+  }
+
+  /* Glitch state (444) */
+  .flip-card-glitch {
+    background-color: hsl(0, 70%, 27%) !important; /* Dark red */
+    border-color: hsl(0, 60%, 40%) !important;
+    animation: flip-glitch-shake 0.1s infinite;
+  }
+
+  .flip-card-glitch .flip-card-top {
+    background: linear-gradient(
+      to bottom,
+      hsl(0, 70%, 30%) 0%,
+      hsl(0, 70%, 25%) 100%
+    );
+  }
+
+  .flip-card-glitch .flip-card-bottom {
+    background: linear-gradient(
+      to bottom,
+      hsl(0, 70%, 22%) 0%,
+      hsl(0, 70%, 18%) 100%
+    );
+  }
+
+  .flip-card-glitch .flip-card-digit {
+    color: hsl(0, 100%, 95%);
+    text-shadow: 
+      0 0 5px rgba(255, 100, 100, 0.8),
+      0 0 10px rgba(255, 50, 50, 0.5);
+  }
+
+  .flip-card-divider-glitch {
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      hsl(0, 60%, 50%) 20%,
+      hsl(0, 60%, 50%) 80%,
+      transparent 100%
+    ) !important;
+  }
+
+  .flip-counter-glitch {
+    animation: flip-container-shake 0.15s infinite;
+  }
+
+  .flip-counter-glitch .flip-counter-label {
+    color: hsl(0, 70%, 60%);
+  }
+
+  @keyframes flip-glitch-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-1px); }
+    75% { transform: translateX(1px); }
+  }
+
+  @keyframes flip-container-shake {
+    0%, 100% { transform: translateX(0) rotate(0deg); }
+    25% { transform: translateX(-0.5px) rotate(-0.2deg); }
+    75% { transform: translateX(0.5px) rotate(0.2deg); }
   }
 
   .transition-title {

@@ -1,59 +1,89 @@
 import { useListenerCounter } from "@/hooks/useListenerCounter";
-import { Users, AlertTriangle } from "lucide-react";
+import { useState, useEffect } from "react";
 
 interface ListenerCounterProps {
   isPlaying: boolean;
 }
 
-export function ListenerCounter({ isPlaying }: ListenerCounterProps) {
-  const { count, isGlitching } = useListenerCounter({ isPlaying });
+interface FlipDigitProps {
+  digit: string;
+  isGlitching: boolean;
+  prevDigit: string;
+}
 
-  const formattedCount = count.toLocaleString();
+function FlipDigit({ digit, isGlitching, prevDigit }: FlipDigitProps) {
+  const [isFlipping, setIsFlipping] = useState(false);
+
+  useEffect(() => {
+    if (digit !== prevDigit) {
+      setIsFlipping(true);
+      const timer = setTimeout(() => setIsFlipping(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [digit, prevDigit]);
 
   return (
-    <div className="flex items-center justify-center gap-3 py-3">
-      {/* Icon */}
-      <div className={`transition-all duration-300 ${isGlitching ? 'text-red-500' : 'text-green-600'}`}>
-        {isGlitching ? (
-          <AlertTriangle className="w-4 h-4 animate-pulse" />
-        ) : (
-          <Users className="w-4 h-4" />
-        )}
-      </div>
-
-      {/* Counter Display */}
-      <div className="flex flex-col items-center">
-        <span className="text-[10px] font-mono tracking-widest text-muted-foreground uppercase mb-1">
-          Listeners
-        </span>
-        
-        <div
-          className={`
-            font-mono text-2xl font-bold tracking-wider
-            transition-all duration-100
-            ${isGlitching 
-              ? 'led-text-red glitch-text' 
-              : 'led-text-green'
-            }
-          `}
-          data-text={formattedCount}
-        >
-          {formattedCount}
+    <div className="flip-card-container">
+      <div 
+        className={`
+          flip-card
+          ${isGlitching ? 'flip-card-glitch' : ''}
+          ${isFlipping ? 'flip-card-flipping' : ''}
+        `}
+      >
+        {/* Top half */}
+        <div className="flip-card-top">
+          <span className="flip-card-digit">{digit}</span>
         </div>
+        
+        {/* Center divider line */}
+        <div className={`flip-card-divider ${isGlitching ? 'flip-card-divider-glitch' : ''}`} />
+        
+        {/* Bottom half */}
+        <div className="flip-card-bottom">
+          <span className="flip-card-digit">{digit}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-        <span className="text-[9px] text-muted-foreground mt-0.5">
-          청취 중
-        </span>
+export function ListenerCounter({ isPlaying }: ListenerCounterProps) {
+  const { count, isGlitching } = useListenerCounter({ isPlaying });
+  const [prevCount, setPrevCount] = useState(count);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setPrevCount(count), 50);
+    return () => clearTimeout(timer);
+  }, [count]);
+
+  const formattedCount = count.toLocaleString();
+  const prevFormattedCount = prevCount.toLocaleString();
+  
+  // Pad to ensure consistent width
+  const digits = formattedCount.split('');
+  const prevDigits = prevFormattedCount.padStart(formattedCount.length, ' ').split('');
+
+  return (
+    <div className={`flip-counter-wrapper ${isGlitching ? 'flip-counter-glitch' : ''}`}>
+      {/* Label */}
+      <div className="flip-counter-label">
+        <span>LISTENERS</span>
+        <span className="flip-counter-label-divider">·</span>
+        <span>청취 중</span>
       </div>
 
-      {/* Decorative indicator */}
-      <div className={`
-        w-2 h-2 rounded-full transition-all duration-300
-        ${isGlitching 
-          ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse' 
-          : 'bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.6)]'
-        }
-      `} />
+      {/* Flip cards container */}
+      <div className="flip-cards-row">
+        {digits.map((digit, index) => (
+          <FlipDigit
+            key={index}
+            digit={digit}
+            prevDigit={prevDigits[index] || ' '}
+            isGlitching={isGlitching}
+          />
+        ))}
+      </div>
     </div>
   );
 }
