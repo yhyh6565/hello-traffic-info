@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Header } from "./Header";
 import { TrackInfo } from "./TrackInfo";
+import { ListenerCounter } from "./ListenerCounter";
 import { ProgressBar } from "./ProgressBar";
 import { PlayerControls } from "./PlayerControls";
 import { ScriptText } from "./ScriptText";
@@ -73,12 +74,17 @@ export function RadioPlayer() {
             <VisualizerArea isPlaying={isPlaying} />
 
             {/* Track Info Area */}
-            <div className="mb-4 z-10 mt-2">
+            <div className="mb-2 z-10 mt-2">
               <TrackInfo
                 displayTitle={displayTitle}
                 isGlitching={isGlitching}
                 type={currentScript?.type}
               />
+            </div>
+
+            {/* Listener Counter */}
+            <div className="mb-4 z-10">
+              <ListenerCounter isPlaying={isPlaying} />
             </div>
           </div>
 
